@@ -41,6 +41,21 @@ router.get("/", (req, res) => {
 	});
 });
 
+/* GET alltweets from hashtag */
+router.get("/hashtags/:hashtag", (req, res) => {
+    const hashtag = req.params.hashtag;
+  
+    Tweet.find({ hashtags: { $in: [hashtag] } })
+      .then((tweets) => {
+        res.json({ tweets });
+      })
+      .catch((error) => {
+        console.error('Erreur lors de la recherche des tweets par hashtag:', error);
+        res.status(500).json({ message: 'Erreur lors de la recherche des tweets par hashtag.' });
+      });
+});
+
+
 /* DELETE tweet */
 
 router.delete("/:id", (req, res) => {
@@ -66,6 +81,8 @@ router.put("/like", (req, res) => {
       }
     })
 });
+
+
 
 
 
