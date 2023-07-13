@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Tweet = require('../models/tweets')
+const { checkBody } = require('../modules/checkBody');
 
 
 /* POST new tweet */
@@ -9,19 +10,27 @@ if (!checkBody(req.body, ['content'])) {
     res.json({ result: false, error: 'Missing or empty fields' });
     return;
     }  
-  // Créer un nouvel objet Tweet
+
+//gestion du hashtag
+  let hashtag =[];
+  if (req.body.hashtag) {
+    hashtag.push(req.body.hashtag)
+  }
+  
+// Créer un nouvel objet Tweet
+
   const newTweet = new Tweet({
-    content,
-    user,
-    timestamp: new Date(),
+    content : req.body.content,
+    userId : req.body.userId ,
+    timeStamp: new Date(),
     likes: 0,
-    hashtags: [],
+    hashtags: hashtag,
     mentions: []
   });
 
   // Enregistrer le nouveau tweet en base de données
-    newTweet.save().then(data => {
-    res.json({ result: true});
+    newTweet.save().then((data) => {
+    res.json({ result: true, data: data});
   });
   });
 
@@ -35,12 +44,32 @@ router.get("/", (req, res) => {
 /* DELETE tweet */
 
 router.delete("/:id", (req, res) => {
-    Tweet.deleteById({_id})
+    Tweet.deleteOne({_id : req.body.id})
     .then(() => {
           res.json({ result: true });
         });
 
 });
+
+/* Update like */
+
+
+router.put("/like", (req, res) => {
+  const tweetId = req.body.id;
+
+  Tweet.findByIdAndUpdate(tweetId, { $inc: { likes: 1 } })
+    .then((tweet) => {
+      if (tweet) {
+        res.json({ message: 'Tweet mis à jour avec succès.' });
+      } else {
+        res.status(404).json({ message: 'Tweet non trouvé.' });
+      }
+    })
+});
+
+
+
+
   
 
 
