@@ -32,5 +32,16 @@ router.get("/", (req, res) => {
 	});
 });
 
+/* DELETE tweet */
+
+router.delete("/:id", (req, res) => {
+    Tweet.deleteById({_id})
+    .then(() => {
+          res.json({ result: true });
+        });
+
+});
+  
+
 
 module.exports = router;
