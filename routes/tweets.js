@@ -31,8 +31,8 @@ if (!checkBody(req.body, ['content'])) {
   // Enregistrer le nouveau tweet en base de données
     newTweet
       .save()
-      .then((data) => {
-      res.json({ result: true, data: data})
+      .then(() => {
+        Tweet.find().populate("userId").then((data) => res.json({ result: true, data: data}))
   });
 
   });
