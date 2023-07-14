@@ -38,7 +38,7 @@ router.post('/signup', (req, res) => {
   });
 });
 
-/* POST users signup. */
+/* POST users signin. */
 router.post('/signin', (req, res) => {
   // Check if the user has filled all the inputs
   if (!checkBody(req.body, ['username', 'password'])) {
@@ -48,7 +48,7 @@ router.post('/signin', (req, res) => {
 
   User.findOne({ username: req.body.username }).then(data => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
-      res.json({ result: true, token: data.token, username: data.username });
+      res.json({ result: true, token: data.token, firstname: data.firstname, username: data.username });
     } else {
       res.json({ result: false, error: 'User not found' });
     }
