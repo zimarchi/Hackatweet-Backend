@@ -35,8 +35,6 @@ if (!checkBody(req.body, ['content'])) {
       res.json({ result: true, data: data})
   });
 
-  
-
   });
 
 /* GET alltweets */
@@ -53,6 +51,7 @@ router.get("/hashtags/:hashtag", (req, res) => {
     const hashtag = req.params.hashtag;
   
     Tweet.find({ hashtags: { $in: [hashtag] } })
+      .populate ('userId')
       .then((tweets) => {
         res.json({ tweets });
       })
