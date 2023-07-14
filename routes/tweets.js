@@ -7,7 +7,7 @@ const { checkBody } = require('../modules/checkBody');
 /* POST new tweet */
 router.post('/addTweet', (req, res) => {
 if (!checkBody(req.body, ['content'])) {
-    res.json({ result: false, error: 'Missing or empty fields' });
+    res.json({ result: false, error: 'Empty message' });
     return;
     }  
 
@@ -29,15 +29,22 @@ if (!checkBody(req.body, ['content'])) {
   });
 
   // Enregistrer le nouveau tweet en base de données
-    newTweet.save().then((data) => {
-    res.json({ result: true, data: data});
+    newTweet
+      .save()
+      .then((data) => {
+      res.json({ result: true, data: data})
   });
+
+  
+
   });
 
 /* GET alltweets */
 router.get("/", (req, res) => {
-	Tweet.find().then(tweets => {
-		res.json({ Tweets: tweets });
+	Tweet.find()
+  .populate('userId')
+  .then(tweets => {
+		res.json({ result: true, tweets: tweets });
 	});
 });
 
